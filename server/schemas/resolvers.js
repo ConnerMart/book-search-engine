@@ -18,21 +18,35 @@ const resolvers = {
       const user = await User.findOne({ email });
 
       if (!user) {
-        throw new AuthenticationError("No profile with this email found!");
+        throw new AuthenticationError("There is no profile with this email.");
       }
 
       const correctPw = await user.isCorrectPassword(password);
 
       if (!correctPw) {
-        throw new AuthenticationError("Incorrect password!");
+        throw new AuthenticationError("Incorrect password.");
       }
 
       const token = signToken(user);
       return { token, user };
     },
-    addUser: {},
+    addUser: async (parent, { username, email, password }) => {
+      const user = await User.create({ username, email, password });
+      const token = signToken(user);
+
+      return { token, user };
+    },
     saveBook: {},
-    removeBook: {},
+    // removeSkill: async (parent, { book }, context) => {
+    //   if (context.user) {
+    //     return User.findOneAndUpdate(
+    //       { _id: context.user._id },
+    //       { $pull: { savedBooks: book } },
+    //       { new: true }
+    //     );
+    //   }
+    //   throw new AuthenticationError("You are not logged in.");
+    // },
   },
 };
 
