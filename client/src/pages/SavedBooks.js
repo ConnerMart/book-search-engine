@@ -25,6 +25,8 @@ const SavedBooks = () => {
 
   const userData = useQuery(GET_ME);
 
+  const [removeBook, { error, data }] = useMutation(REMOVE_BOOK);
+
   // useEffect(() => {
   //   const getUserData = async () => {
   //     try {
@@ -60,14 +62,17 @@ const SavedBooks = () => {
 
     try {
       // const response = await deleteBook(bookId, token);
-      const response = useMutation(REMOVE_BOOK);
 
-      if (!response.ok) {
-        throw new Error("something went wrong!");
-      }
+      // if (!response.ok) {
+      //   throw new Error("something went wrong!");
+      // }
 
-      const updatedUser = await response.json();
-      setUserData(updatedUser);
+      // const updatedUser = await response.json();
+      const { data } = await removeBook({
+        variables: { bookId },
+      });
+
+      // setUserData(updatedUser);
       // upon success, remove book's id from localStorage
       removeBookId(bookId);
     } catch (err) {
